@@ -1,0 +1,46 @@
+name: Notify website
+
+# The Release lives in this repo, so the website sync is triggered from here:
+# whenever a Release goes live — whether the private build pipeline in
+# alithon/spu flipped it out of draft, or someone published it by hand — tell
+# alithon.com to pull the assets onto the downloads page.
+#
+# POST /api/v3/releases/sync makes the daisy side download this Release's
+# .exe/.dmg/.tar.gz, verify their digests, refresh the rolling "latest"
+# copies, and upsert one Release row per platform. It is idempotent, so a
+# re-run is always safe; re-syncing an older tag is how a rollback is done.
+#
+# This fires because the private repo publishes with a PAT. A Release
+# published with the default GITHUB_TOKEN would NOT start this workflow —
+# GitHub suppresses those events so workflows cannot trigger each other.
+on:
+  release:
+    types: [published]
+  # Manual re-run: recover from a failed sync, or re-point the site at an
+  # older tag, without touching the Release itself.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to sync (e.g. v6.6.1), or "latest"'
+        required: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger website sync
+        env:
+          DAISY_SYNC_URL: ${{ secrets.DAISY_SYNC_URL }}
+          DAISY_TOKEN: ${{ secrets.DAISY_INTERNAL_API_TOKEN }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          if [ -z "$DAISY_SYNC_URL" ] || [ -z "$DAISY_TOKEN" ]; then
+            echo "DAISY_SYNC_URL / DAISY_INTERNAL_API_TOKEN secrets not set" >&2
+            exit 1
+          fi
+          echo "Syncing ${TAG} to the website..."
+          curl -sS -X POST "$DAISY_SYNC_URL" \
+            -H "X-Internal-Token: $DAISY_TOKEN" \
+            -H 'Content-Type: application/json' \
+            -d "{\"tag\": \"${TAG}\"}" \
+            --fail-with-body --retry 5 --retry-all-errors --max-time 120
