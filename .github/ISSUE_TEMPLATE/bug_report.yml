@@ -1,0 +1,137 @@
+name: Bug report / 缺陷报告
+description: Something is broken or behaves differently than documented — 功能异常或与文档描述不一致
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. Please **do not** include license keys,
+        order numbers, customer names or captured device data that has to stay private —
+        email <bill@alithon.com> instead for anything sensitive.
+
+        感谢反馈。请**不要**在公开 Issue 中贴出授权码、订单号、客户名称或不便公开的设备数据；
+        涉及敏感信息请改发邮件至 <bill@alithon.com>。
+
+  - type: input
+    id: version
+    attributes:
+      label: Version / 版本号
+      description: Help → About, e.g. `6.6.1 (0802)` — 帮助 → 关于
+      placeholder: "6.6.1 (0802)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform / 操作系统
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS (Apple Silicon)
+        - macOS (Intel)
+        - Linux
+        - Other / 其它
+    validations:
+      required: true
+
+  - type: input
+    id: os-detail
+    attributes:
+      label: OS version / 系统版本
+      placeholder: "Windows 11 24H2 / macOS 15.3 / Ubuntu 24.04"
+
+  - type: dropdown
+    id: source
+    attributes:
+      label: Where the build came from / 安装包来源
+      options:
+        - GitHub Releases (this repository)
+        - alithon.com
+        - Microsoft Store
+        - Mac App Store
+        - Other / 其它
+    validations:
+      required: true
+
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection type / 连接类型
+      multiple: true
+      options:
+        - Serial / 串口
+        - TCP client / TCP 客户端
+        - TCP server / TCP 服务端
+        - UDP
+        - Bridge between two connections / 桥接
+        - Tools only (CRC, Modbus builder, converter) / 仅工具箱
+        - Not connection related / 与连接无关
+    validations:
+      required: true
+
+  - type: input
+    id: hardware
+    attributes:
+      label: Adapter and port settings / 转换器与端口参数
+      description: For serial problems — 串口问题请填写
+      placeholder: "CH340, COM7, 115200 8N1, no flow control"
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened / 实际发生了什么
+      description: Include the exact error text or status bar message if there is one — 有报错请附上原文
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected / 期望的行为
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce / 复现步骤
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: How often / 出现频率
+      options:
+        - Every time / 必现
+        - Often / 经常
+        - Occasionally / 偶尔
+        - Once so far / 目前只出现过一次
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots, log excerpts, `.spu` file / 截图、日志片段、会话文件
+      description: |
+        A screenshot of the receive window or a short excerpt of the session log is worth
+        several paragraphs. Drag files straight into this box.
+        接收窗口的截图或一小段会话日志往往胜过大段描述，文件可直接拖入此处。
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting / 提交前确认
+      options:
+        - label: I searched the existing issues — 我已搜索过现有 Issue
+          required: true
+        - label: I reproduced this on the latest release — 已在最新版本上复现
+          required: true
+        - label: This report contains no license keys, order details or private device data — 报告中不含授权码、订单信息或私密设备数据
+          required: true

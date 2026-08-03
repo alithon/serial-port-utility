@@ -1,0 +1,71 @@
+name: Feature request / 功能建议
+description: A missing capability, a protocol you need, a workflow that is harder than it should be — 缺失的能力、需要支持的协议、不够顺手的流程
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The most useful requests describe the **job** rather than the control: what you are
+        trying to get done, and what makes it awkward today.
+
+        最有价值的建议描述的是**要完成的工作**，而不是某个控件：你想做成什么，
+        以及现在卡在哪里。
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do / 你想完成什么
+      placeholder: "I bring up RS-485 meters on site and have to send the same six polling frames in order…"
+    validations:
+      required: true
+
+  - type: textarea
+    id: today
+    attributes:
+      label: How you handle it today / 现在怎么做
+      description: Manual steps, a second tool, a script — 手工操作、另一个工具、脚本
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would help / 你希望怎样
+      description: A rough sketch is fine; if another tool does it well, name it — 粗略描述即可；如果有工具做得好，请点名
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area / 涉及范围
+      multiple: true
+      options:
+        - Serial connection / 串口连接
+        - TCP / UDP
+        - Bridge, RFC 2217, Modbus gateway / 桥接、RFC 2217、Modbus 网关
+        - Sending, macros, checksums / 发送、快捷指令、校验
+        - Display, search, filtering / 显示、查找、过滤
+        - Logging and session files / 日志与会话文件
+        - Tools (CRC, Modbus builder, converter) / 工具箱
+        - Cloud sync / 云同步
+        - Licensing and activation / 授权与激活
+        - Translation and localization / 翻译与本地化
+        - Other / 其它
+
+  - type: dropdown
+    id: importance
+    attributes:
+      label: How much does it matter / 重要程度
+      options:
+        - Blocking — I need another tool for this today / 阻塞，目前必须换工具
+        - Daily friction / 每天都会碰到
+        - Occasional nice-to-have / 偶尔用得上
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting / 提交前确认
+      options:
+        - label: I searched the existing issues — 我已搜索过现有 Issue
+          required: true

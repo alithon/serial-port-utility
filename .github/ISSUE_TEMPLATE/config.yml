@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation and guides / 文档与指南
+    url: https://alithon.com/docs
+    about: Getting started, task guides, troubleshooting — 快速上手、任务指南、故障排查
+
+  - name: Download the latest version / 下载最新版本
+    url: https://github.com/alithon/serial-port-utility/releases/latest
+    about: Windows, macOS and Linux packages, plus the release notes — 三平台安装包与发布说明
+
+  - name: Orders, licenses and activation / 订单、授权与激活
+    url: https://alithon.com/contact
+    about: Anything involving a key, an order or private data — email instead of a public issue — 涉及授权码、订单或私密信息请勿公开提交
+
+  - name: Report a security vulnerability / 报告安全漏洞
+    url: https://github.com/alithon/serial-port-utility/blob/main/SECURITY.md
+    about: Email bill@alithon.com — never a public issue — 请发邮件，切勿公开提交
