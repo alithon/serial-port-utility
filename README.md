@@ -145,6 +145,34 @@ that carries them, and Serial Port Utility speaks it from **both ends**.
 - Parameters are sent once the option is agreed, and after that only what actually changed —
   so a busy link is not filled with renegotiation.
 
+### Firmware updates over the wire: XMODEM and YMODEM
+
+A device drops into its bootloader, starts printing `C` once a second, and wants an image sent
+to it. Until now that meant reaching for a second terminal program; Serial Port Utility does
+it on the connection you already have.
+
+- **Five variants, both directions** — XMODEM (128 bytes, checksum), XMODEM-CRC, XMODEM-1K,
+  YMODEM and YMODEM-G, sending and receiving. Most microcontroller bootloaders — ST's AN3155
+  and a great many vendor BSPs — speak YMODEM.
+- **On any connection that can carry it** — a local serial port, a TCP client, a TCP server,
+  or a remote serial port over RFC 2217. UDP is refused rather than half-supported: these
+  protocols retransmit by block number and cannot resynchronise after a reordered datagram.
+- **Through a device server** — RFC 2217 can set the bootloader's baud rate on the far port
+  *and* carry the file over the same connection, so a device in the field can be updated from
+  the office. Raw TCP forwarding can move the file but cannot change the remote baud rate.
+- **To a device that dialled in** — running as a TCP server, a transfer pins one client and
+  leaves every other client sending, receiving and displaying as normal. With several
+  connected you pick the one you mean; there is deliberately no "first client" fallback.
+- **The transfer owns the port while it runs** — the send box, loop send, terminal keystrokes,
+  Break, DTR/RTS and parameter changes are all refused with a reason, because any one of them
+  would end an update.
+- **Failures name something you can act on** — a wrong baud rate, a device that never asked, a
+  disk that filled. An interrupted update says the device may be left with an incomplete
+  image, and nothing is ever resumed silently.
+- **Received files are handled carefully** — the name the device sends is treated as untrusted
+  input, an existing file is never overwritten, and data lands in a temporary file that is
+  renamed into place only when the transfer completes.
+
 ### Read the bytes the way you need them
 
 <img src="docs/images/find-filter.png" alt="The find bar filtering the receive window down to matching lines, with a match counter" width="820">
@@ -204,6 +232,8 @@ that carries them, and Serial Port Utility speaks it from **both ends**.
 ## Typical uses
 
 - Bring-up and debugging of microcontroller firmware over UART.
+- Loading firmware into a bootloader with YMODEM or XMODEM, locally or through a device
+  server.
 - Talking to RS-232 / RS-485 instruments, PLCs, inverters and power meters.
 - Modbus RTU and Modbus ASCII register reads and writes, or gatewaying Modbus TCP to RTU.
 - Making a serial-only instrument reachable over Ethernet, with the traffic still visible.
