@@ -21,7 +21,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag to sync (e.g. v6.6.1), or "latest"'
+        description: 'Release tag to sync (e.g. v6.6.3), or "latest"'
         required: true
 
 jobs:
