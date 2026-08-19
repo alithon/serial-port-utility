@@ -103,6 +103,55 @@ Accessing a serial port normally requires membership of the `dialout` group:
   the boundary between them can be dragged, so a chatty port gets more room.
 - Automatic reconnection after an unexpected disconnect.
 
+### Three ways to reach a port that is somewhere else
+
+Working on a remote serial device is not one problem. Picking the wrong path usually costs you
+either *connected, but the baud rate cannot be changed* or *the network never reaches the site
+at all*. Serial Port Utility ships all three paths; what separates them is **which end opens
+the connection** and **whether serial parameters travel with the data**.
+
+<img src="docs/images/remote-rfc2217-en.svg" alt="RFC 2217 topology: a remote PC opens a connection to TCP 6000 on the on-site PC, which runs an RFC 2217 server and reaches the serial device over a cable; a bar across the whole chain reads data plus serial parameter control" width="760">
+
+*RFC 2217 — the remote end dials in, and parameters travel with the data, so baud rate, parity
+and DTR/RTS stay adjustable from there.*
+
+<img src="docs/images/remote-tcp-en.svg" alt="Transparent TCP forwarding topology: a remote PC running any TCP program connects to the on-site PC, which bridges transparently to the serial device; the bar across the chain reads bytes only, both directions" width="760">
+
+*Transparent forwarding — the same network path, but only bytes cross it; the site fixes the
+parameters.*
+
+<img src="docs/images/remote-cloud-en.svg" alt="Cloud Console topology: a browser anywhere dials out to the Alithon cloud, and the on-site PC behind NAT also dials out with a heartbeat while reaching the serial device over a cable; the bar underneath reads data plus serial parameter control, each capability granted on the desktop" width="760">
+
+*Cloud Console — both ends dial out, so a site behind NAT with no public address still works.*
+
+| | RFC 2217 | Transparent TCP | Cloud Console |
+| --- | --- | --- | --- |
+| Network requirement | Client reaches the site's IP and port | Client reaches the site's IP and port | Site has Internet access; no inbound port |
+| Change serial parameters remotely | Yes | No | Yes |
+| Drive DTR/RTS remotely | Yes | No | Yes |
+| What the client is | This application, an RFC 2217 virtual COM driver, pyserial, device-management software | Any TCP program | A browser |
+| Encryption and authentication | None — relies on the LAN or a VPN | None — relies on the LAN or a VPN | Account sign-in over the cloud link |
+| Extra cost | None | None | Draws on the cloud traffic quota |
+
+Start from one question: **can the client reach the site's IP and port?**
+
+- **No** — behind NAT, no public address, no VPN: Cloud Console is the only path. Forwarding an
+  inbound port just for this exposes a debugging machine to the public Internet, which costs
+  far more than it buys.
+- **Yes**, and the far end has to set baud rate, parity, stop bits or the control lines: use
+  RFC 2217. Both ends have to speak it — one end alone is not enough.
+- **Yes**, and the parameters are already fixed on site: use transparent forwarding, where the
+  client can be any TCP program.
+
+Two mismatches account for most *it connects but nothing happens* reports: a site bridge left
+on **Transparent** while the client dials in as an RFC 2217 client — TCP comes up, but no
+parameter ever reaches the port — and a plain TCP socket pointed at an **RFC 2217 server**,
+where the negotiation bytes arrive as garbage at the head of the stream.
+
+The three are not exclusive. A common arrangement is RFC 2217 on the LAN day to day and Cloud
+Console while travelling, both over the same physical serial connection. The full write-up is
+[choosing remote access](https://alithon.com/docs/scenarios/remote-access).
+
 ### A transparent bridge between any two ports
 
 Forward bytes between any two configured connections — serial ↔ TCP server/client,
@@ -119,6 +168,11 @@ moves the bytes, but you cannot see them.
 - Back pressure with a drop counter that stays on screen once it moves, a merged
   bidirectional capture (one time-ordered file with `A->B` / `B->A` markers) and a two-minute
   throughput sparkline.
+
+<img src="docs/images/bridge-en.jpg" alt="The bridge editor over a two-connection workspace: End A a serial port, End B a TCP server on 0.0.0.0:6000, direction both ways, with an allowed-clients list under Access" width="820">
+
+The bridge editor names both ends, the direction and who is allowed to connect; framing, fan-out
+and the capture file live on the other two tabs.
 
 Start here: [bridge guides in the help center](https://alithon.com/docs/guides).
 
@@ -144,6 +198,40 @@ that carries them, and Serial Port Utility speaks it from **both ends**.
   local port keeps its own settings.
 - Parameters are sent once the option is agreed, and after that only what actually changed —
   so a busy link is not filled with renegotiation.
+
+<img src="docs/images/bridge-protocol-en.jpg" alt="The bridge dialog's Protocol tab with Mode set to RFC 2217 server, noting that clients connect with rfc2217://host:port or a virtual COM driver, framing set to forward immediately, and TCP server clients set to one at a time" width="620">
+
+Serving a local port is one dropdown in the bridge's *Protocol* tab — clients then connect with
+`rfc2217://host:port`. Step-by-step:
+[RFC 2217 server](https://alithon.com/docs/guides/rfc2217-server) ·
+[RFC 2217 client](https://alithon.com/docs/guides/rfc2217-client).
+
+### Cloud Console: the same port, from a browser
+
+<img src="docs/images/cloud-console-en.jpg" alt="The Cloud Console device page: a live RX log and a Text/HEX send box on the left, a port list with open and close buttons and a command status table on the right" width="820">
+
+When the site sits behind NAT and there is no VPN, neither of the paths above can be reached
+from outside. Cloud Console solves it from the other direction: the desktop application and the
+browser both dial **out** to the cloud, so nothing has to be forwarded into the site.
+
+- **Off by default, and granted on the machine itself** — signing in is not enough. *Cloud
+  Console* puts the device online, *Allow Remote Send* releases sending and *Allow Remote Port
+  Control* releases opening, closing and reconfiguring ports. With only the first switch on the
+  console is view-only, and the web side cannot bypass any of them.
+- **What the browser gets** — the device's ports under the same names as the desktop, the live
+  RX log of the selected one, a Text or HEX send box with a line ending, and a command table
+  that reports every remote action's state and failure reason.
+- **A live window, not a recorder** — nothing is uploaded while nobody is watching, the page
+  starts from the moment you open it and the cloud keeps no history. Complete records stay in
+  the desktop log files.
+- **Real-time by WebSocket** — commands and status ride a live channel, so there is no poll
+  interval in the way; a backend that does not offer the gateway keeps working over HTTP
+  polling.
+- **Metered, not unlimited** — event uploads and remote commands each draw on a monthly cloud
+  traffic allowance, with usage and top-ups on the web console.
+
+Details: [Web remote debugging](https://alithon.com/docs/cloud-console) ·
+[debugging a port from anywhere](https://alithon.com/docs/scenarios/remote-cloud-console).
 
 ### Firmware updates over the wire: XMODEM and YMODEM
 
@@ -246,6 +334,8 @@ it on the connection you already have.
 - Making a serial-only instrument reachable over Ethernet, with the traffic still visible.
 - Driving the serial port of a device server (Moxa NPort, ser2net) from your desk over
   RFC 2217, including its baud rate and control lines.
+- Watching and driving an on-site port from a browser when the site is behind NAT and there is
+  no VPN into it.
 - Sitting between a host application and a device to watch both halves of the conversation.
 - GNSS receivers, modems and AT-command devices.
 - Capturing a long-running device log for later analysis.
@@ -258,6 +348,11 @@ Full serial parameters for any COM port — baud rate, data bits, parity, stop b
 control and the DTR/RTS control lines:
 
 <img src="docs/images/serial-settings.png" alt="The serial parameters page of the connection settings dialog" width="820">
+
+The Send page of the settings dialog — encoding, loop, line ending, what Enter sends, Display
+Send, Local Echo and the appended checksum:
+
+<img src="docs/images/send-settings-en.png" alt="The Send page of the settings dialog, with text or hex, encoding, loop interval, appended line ending, Enter sends, Display Send, Local Echo, comment support, format send and append checksum" width="620">
 
 The CRC calculator, with the standard families and a fully custom polynomial:
 
