@@ -182,6 +182,10 @@ it on the connection you already have.
   Latin-1, system codepage and more — so a GBK firmware log reads as text instead of mojibake.
 - Millisecond timestamps on every received and sent line, with a configurable format.
 - Sent data can be shown inline with the replies, so a command and its answer stay together.
+- Local echo in terminal mode: keystrokes appear in the receive view as you type them, so a
+  device that never echoes back — common on embedded targets — does not leave you typing
+  blind. It is independent of the inline display of sent frames, echoed keys stay out of the
+  log, and it is off by default so a device that does echo never doubles every character.
 - Auto line feed after a configurable idle gap, keeping packet boundaries readable on a busy
   line.
 - Find bar with previous/next, case sensitivity and a filter mode that hides everything except
@@ -223,7 +227,10 @@ it on the connection you already have.
 <img src="docs/images/quick-settings.png" alt="Quick settings: choosing which fields the connection panel shows, and in what order" width="820">
 
 - Quick settings: choose exactly which fields the connection panel shows and in what order,
-  or hide the panel entirely for a data-only view.
+  hide the TX/RX and control-line indicators, or hide the panel entirely for a data-only
+  view.
+- The quick settings bar drags down to the width the fields you kept actually need — long
+  port names and combo entries elide in place instead of pinning it open.
 - Configurable display font, colours and a display buffer of up to hundreds of megabytes.
 - Optional cloud sync ties device records, messages, orders and license status together for
   field-service work — and can be left alone entirely if you only want the terminal.

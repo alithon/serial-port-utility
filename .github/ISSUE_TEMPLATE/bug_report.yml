@@ -16,8 +16,8 @@ body:
     id: version
     attributes:
       label: Version / 版本号
-      description: Help → About, e.g. `6.6.1 (0802)` — 帮助 → 关于
-      placeholder: "6.6.1 (0802)"
+      description: Help → About, e.g. `6.6.3 (0818)` — 帮助 → 关于
+      placeholder: "6.6.3 (0818)"
     validations:
       required: true
 
