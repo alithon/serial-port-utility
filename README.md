@@ -103,11 +103,11 @@ Accessing a serial port normally requires membership of the `dialout` group:
   the boundary between them can be dragged, so a chatty port gets more room.
 - Automatic reconnection after an unexpected disconnect.
 
-### Three ways to reach a port that is somewhere else
+### Four ways to reach a port that is somewhere else
 
 Working on a remote serial device is not one problem. Picking the wrong path usually costs you
 either *connected, but the baud rate cannot be changed* or *the network never reaches the site
-at all*. Serial Port Utility ships all three paths; what separates them is **which end opens
+at all*. Serial Port Utility ships all four paths; what separates them is **which end opens
 the connection** and **whether serial parameters travel with the data**.
 
 <img src="docs/images/remote-rfc2217-en.svg" alt="RFC 2217 topology: a remote PC opens a connection to TCP 6000 on the on-site PC, which runs an RFC 2217 server and reaches the serial device over a cable; a bar across the whole chain reads data plus serial parameter control" width="760">
@@ -124,20 +124,26 @@ parameters.*
 
 *Cloud Console — both ends dial out, so a site behind NAT with no public address still works.*
 
-| | RFC 2217 | Transparent TCP | Cloud Console |
-| --- | --- | --- | --- |
-| Network requirement | Client reaches the site's IP and port | Client reaches the site's IP and port | Site has Internet access; no inbound port |
-| Change serial parameters remotely | Yes | No | Yes |
-| Drive DTR/RTS remotely | Yes | No | Yes |
-| What the client is | This application, an RFC 2217 virtual COM driver, pyserial, device-management software | Any TCP program | A browser |
-| Encryption and authentication | None — relies on the LAN or a VPN | None — relies on the LAN or a VPN | Account sign-in over the cloud link |
-| Extra cost | None | None | Draws on the cloud traffic quota |
+**Cloud Relay** takes the same route — both ends dial out — but ends in this application rather
+than a browser: the far port appears as *Remote Serial (Cloud Relay)* in the port list and behaves
+like a local one, RFC 2217 parameter control included, so XMODEM, Modbus and anything else that
+needs a real port run across it unchanged.
+
+| | RFC 2217 | Transparent TCP | Cloud Console | Cloud Relay |
+| --- | --- | --- | --- | --- |
+| Network requirement | Client reaches the site's IP and port | Client reaches the site's IP and port | Site has Internet access; no inbound port | Both ends have Internet access; no inbound port |
+| Change serial parameters remotely | Yes | No | Yes | Yes |
+| Drive DTR/RTS remotely | Yes | No | Yes | Yes |
+| What the client is | This application, an RFC 2217 virtual COM driver, pyserial, device-management software | Any TCP program | A browser | This application |
+| Encryption and authentication | None — relies on the LAN or a VPN | None — relies on the LAN or a VPN | Account sign-in over the cloud link | Account sign-in over the cloud link |
+| Extra cost | None | None | Draws on the cloud traffic quota | Draws on the cloud traffic quota |
 
 Start from one question: **can the client reach the site's IP and port?**
 
-- **No** — behind NAT, no public address, no VPN: Cloud Console is the only path. Forwarding an
-  inbound port just for this exposes a debugging machine to the public Internet, which costs
-  far more than it buys.
+- **No** — behind NAT, no public address, no VPN: go through the cloud. Cloud Console to watch
+  and send from a browser; Cloud Relay when the far end needs a real port — a file transfer,
+  Modbus, or a program that expects a COM port. Forwarding an inbound port just for this exposes
+  a debugging machine to the public Internet, which costs far more than it buys.
 - **Yes**, and the far end has to set baud rate, parity, stop bits or the control lines: use
   RFC 2217. Both ends have to speak it — one end alone is not enough.
 - **Yes**, and the parameters are already fixed on site: use transparent forwarding, where the
@@ -148,9 +154,9 @@ on **Transparent** while the client dials in as an RFC 2217 client — TCP comes
 parameter ever reaches the port — and a plain TCP socket pointed at an **RFC 2217 server**,
 where the negotiation bytes arrive as garbage at the head of the stream.
 
-The three are not exclusive. A common arrangement is RFC 2217 on the LAN day to day and Cloud
-Console while travelling, both over the same physical serial connection. The full write-up is
-[choosing remote access](https://alithon.com/docs/scenarios/remote-access).
+The four are not exclusive. A common arrangement is RFC 2217 on the LAN day to day and Cloud
+Console or Cloud Relay while travelling, all over the same physical serial connection. The full
+write-up is [choosing remote access](https://alithon.com/docs/scenarios/remote-access).
 
 ### A transparent bridge between any two ports
 
@@ -215,9 +221,10 @@ from outside. Cloud Console solves it from the other direction: the desktop appl
 browser both dial **out** to the cloud, so nothing has to be forwarded into the site.
 
 - **Off by default, and granted on the machine itself** — signing in is not enough. *Cloud
-  Console* puts the device online, *Allow Remote Send* releases sending and *Allow Remote Port
-  Control* releases opening, closing and reconfiguring ports. With only the first switch on the
-  console is view-only, and the web side cannot bypass any of them.
+  Console* puts the device online, *Allow Remote Send* releases sending, *Allow Remote Port
+  Control* releases opening, closing and reconfiguring ports, and *Allow Cloud Relay* lets one
+  operator take a port over as a remote serial port. With only the first switch on the console
+  is view-only, and the web side cannot bypass any of them.
 - **What the browser gets** — the device's ports under the same names as the desktop, the live
   RX log of the selected one, a Text or HEX send box with a line ending, and a command table
   that reports every remote action's state and failure reason.

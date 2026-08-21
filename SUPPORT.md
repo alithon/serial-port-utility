@@ -30,7 +30,7 @@ commitment, but reports with enough detail to reproduce the problem get looked a
 
 ## What to include in a bug report
 
-1. **Version** — Help → About, e.g. `6.6.3 (0818)`.
+1. **Version** — Help → About, e.g. `6.6.4 (0821)`.
 2. **Platform** — Windows 11 24H2 / macOS 15.3 Apple Silicon / Ubuntu 24.04, and whether the
    package came from this repository, alithon.com or an app store.
 3. **Connection type** — serial (which adapter and port parameters), TCP client/server, UDP,
@@ -81,7 +81,7 @@ Issue 由开发者本人阅读。这里不做响应时限承诺，但信息足�
 
 ## 缺陷报告请包含
 
-1. **版本号** —— 帮助 → 关于，例如 `6.6.3 (0818)`。
+1. **版本号** —— 帮助 → 关于，例如 `6.6.4 (0821)`。
 2. **操作系统** —— 如 Windows 11 24H2 / macOS 15.3（Apple 芯片）/ Ubuntu 24.04，
    以及安装包来自本仓库、官网还是应用商店。
 3. **连接类型** —— 串口（哪种转换芯片、什么端口参数）、TCP 客户端/服务端、UDP，
