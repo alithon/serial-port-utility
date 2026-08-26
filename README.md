@@ -103,12 +103,13 @@ Accessing a serial port normally requires membership of the `dialout` group:
   the boundary between them can be dragged, so a chatty port gets more room.
 - Automatic reconnection after an unexpected disconnect.
 
-### Four ways to reach a port that is somewhere else
+### Five ways to reach a port that is somewhere else
 
 Working on a remote serial device is not one problem. Picking the wrong path usually costs you
 either *connected, but the baud rate cannot be changed* or *the network never reaches the site
-at all*. Serial Port Utility ships all four paths; what separates them is **which end opens
-the connection** and **whether serial parameters travel with the data**.
+at all*. Serial Port Utility ships all five paths; what separates them is **which end opens
+the connection**, **whether serial parameters travel with the data**, and **what the far end
+needs to have installed**.
 
 <img src="docs/images/remote-rfc2217-en.svg" alt="RFC 2217 topology: a remote PC opens a connection to TCP 6000 on the on-site PC, which runs an RFC 2217 server and reaches the serial device over a cable; a bar across the whole chain reads data plus serial parameter control" width="760">
 
@@ -120,30 +121,38 @@ and DTR/RTS stay adjustable from there.*
 *Transparent forwarding — the same network path, but only bytes cross it; the site fixes the
 parameters.*
 
-<img src="docs/images/remote-cloud-en.svg" alt="Cloud Console topology: a browser anywhere dials out to the Alithon cloud, and the on-site PC behind NAT also dials out with a heartbeat while reaching the serial device over a cable; the bar underneath reads data plus serial parameter control, each capability granted on the desktop" width="760">
+<img src="docs/images/remote-cloud-en.svg" alt="Live Console topology: a browser anywhere dials out to the Alithon cloud, and the on-site PC behind NAT also dials out with a heartbeat while reaching the serial device over a cable; the bar underneath reads data plus serial parameter control, each capability granted on the desktop" width="760">
 
-*Cloud Console — both ends dial out, so a site behind NAT with no public address still works.*
+*Live Console — both ends dial out, so a site behind NAT with no public address still works.*
 
-**Cloud Relay** takes the same route — both ends dial out — but ends in this application rather
-than a browser: the far port appears as *Remote Serial (Cloud Relay)* in the port list and behaves
+**Live Relay** takes the same route — both ends dial out — but ends in this application rather
+than a browser: the far port appears as *Remote Serial (Live Relay)* in the port list and behaves
 like a local one, RFC 2217 parameter control included, so XMODEM, Modbus and anything else that
-needs a real port run across it unchanged.
+needs a real port run across it unchanged. Live Relay reaches the machines on **your own
+account**.
 
-| | RFC 2217 | Transparent TCP | Cloud Console | Cloud Relay |
-| --- | --- | --- | --- | --- |
-| Network requirement | Client reaches the site's IP and port | Client reaches the site's IP and port | Site has Internet access; no inbound port | Both ends have Internet access; no inbound port |
-| Change serial parameters remotely | Yes | No | Yes | Yes |
-| Drive DTR/RTS remotely | Yes | No | Yes | Yes |
-| What the client is | This application, an RFC 2217 virtual COM driver, pyserial, device-management software | Any TCP program | A browser | This application |
-| Encryption and authentication | None — relies on the LAN or a VPN | None — relies on the LAN or a VPN | Account sign-in over the cloud link | Account sign-in over the cloud link |
-| Extra cost | None | None | Draws on the cloud traffic quota | Draws on the cloud traffic quota |
+**Live Share** is the same relay opened to somebody who is not on your account at all: mint a
+time-limited invite code for one port and send it. The holder joins from Serial Port Utility or
+straight from the browser — no registration, no subscription, no bound device — and the traffic
+stays on your side.
+
+| | RFC 2217 | Transparent TCP | Live Console | Live Relay | Live Share |
+| --- | --- | --- | --- | --- | --- |
+| Network requirement | Client reaches the site's IP and port | Client reaches the site's IP and port | Site has Internet access; no inbound port | Both ends have Internet access; no inbound port | Both ends have Internet access; no inbound port |
+| Change serial parameters remotely | Yes | No | Yes | Yes | Yes, if the code grants it |
+| Drive DTR/RTS remotely | Yes | No | Yes | Yes | Yes, if the code grants it |
+| What the client is | This application, an RFC 2217 virtual COM driver, pyserial, device-management software | Any TCP program | A browser | This application | This application or a browser |
+| Who the far end has to be | Anyone who can reach the port | Anyone who can reach the port | You, signed in | You, signed in on both machines | Whoever holds the code — no account at all |
+| Encryption and authentication | None — relies on the LAN or a VPN | None — relies on the LAN or a VPN | Account sign-in over the cloud link | Account sign-in over the cloud link | The code, an optional passcode, and an expiry |
+| Extra cost | None | None | Draws on the cloud traffic quota | Draws on the cloud traffic quota | Draws on the sharer's cloud traffic quota |
 
 Start from one question: **can the client reach the site's IP and port?**
 
-- **No** — behind NAT, no public address, no VPN: go through the cloud. Cloud Console to watch
-  and send from a browser; Cloud Relay when the far end needs a real port — a file transfer,
-  Modbus, or a program that expects a COM port. Forwarding an inbound port just for this exposes
-  a debugging machine to the public Internet, which costs far more than it buys.
+- **No** — behind NAT, no public address, no VPN: go through the cloud. Live Console to watch
+  and send from a browser; Live Relay when the far end needs a real port — a file transfer,
+  Modbus, or a program that expects a COM port; Live Share when the far end is a colleague or a
+  vendor with no account of yours. Forwarding an inbound port just for this exposes a debugging
+  machine to the public Internet, which costs far more than it buys.
 - **Yes**, and the far end has to set baud rate, parity, stop bits or the control lines: use
   RFC 2217. Both ends have to speak it — one end alone is not enough.
 - **Yes**, and the parameters are already fixed on site: use transparent forwarding, where the
@@ -154,9 +163,12 @@ on **Transparent** while the client dials in as an RFC 2217 client — TCP comes
 parameter ever reaches the port — and a plain TCP socket pointed at an **RFC 2217 server**,
 where the negotiation bytes arrive as garbage at the head of the stream.
 
-The four are not exclusive. A common arrangement is RFC 2217 on the LAN day to day and Cloud
-Console or Cloud Relay while travelling, all over the same physical serial connection. The full
-write-up is [choosing remote access](https://alithon.com/docs/scenarios/remote-access).
+The five are not exclusive. A common arrangement is RFC 2217 on the LAN day to day and Live
+Console or Live Relay while travelling, all over the same physical serial connection. All four
+of the ways to open a port to somewhere else — RFC 2217 Server, Live Console, Live Relay and
+Live Share — are switched from one **Live Sync** cell in the status bar, which also says, in a word and a colour,
+whether a door is standing open and whether somebody is driving one of your ports right now. The
+full write-up is [choosing remote access](https://alithon.com/docs/scenarios/remote-access).
 
 ### A transparent bridge between any two ports
 
@@ -212,17 +224,17 @@ Serving a local port is one dropdown in the bridge's *Protocol* tab — clients 
 [RFC 2217 server](https://alithon.com/docs/guides/rfc2217-server) ·
 [RFC 2217 client](https://alithon.com/docs/guides/rfc2217-client).
 
-### Cloud Console: the same port, from a browser
+### Live Console: the same port, from a browser
 
-<img src="docs/images/cloud-console-en.jpg" alt="The Cloud Console device page: a live RX log and a Text/HEX send box on the left, a port list with open and close buttons and a command status table on the right" width="820">
+<img src="docs/images/cloud-console-en.jpg" alt="The Live Console device page: a live RX log and a Text/HEX send box on the left, a port list with open and close buttons and a command status table on the right" width="820">
 
 When the site sits behind NAT and there is no VPN, neither of the paths above can be reached
-from outside. Cloud Console solves it from the other direction: the desktop application and the
+from outside. Live Console solves it from the other direction: the desktop application and the
 browser both dial **out** to the cloud, so nothing has to be forwarded into the site.
 
-- **Off by default, and granted on the machine itself** — signing in is not enough. *Cloud
+- **Off by default, and granted on the machine itself** — signing in is not enough. *Live
   Console* puts the device online, *Allow Remote Send* releases sending, *Allow Remote Port
-  Control* releases opening, closing and reconfiguring ports, and *Allow Cloud Relay* lets one
+  Control* releases opening, closing and reconfiguring ports, and *Live Relay* lets one
   operator take a port over as a remote serial port. With only the first switch on the console
   is view-only, and the web side cannot bypass any of them.
 - **What the browser gets** — the device's ports under the same names as the desktop, the live
@@ -239,6 +251,28 @@ browser both dial **out** to the cloud, so nothing has to be forwarded into the 
 
 Details: [Web remote debugging](https://alithon.com/docs/cloud-console) ·
 [debugging a port from anywhere](https://alithon.com/docs/scenarios/remote-cloud-console).
+
+### Live Share: hand one port to someone who has no account
+
+Live Relay reaches the machines on your own account, which is no help when the person who
+needs the port is a colleague in another company, a vendor's support engineer, or a customer
+you are walking through a problem. Live Share is the same relay opened by an **invite code**
+instead of by an account.
+
+- **One port, one code, one clock** — *Cloud > Share Port with a Guest…* mints an
+  `XXXX-XXXX-XXXX` code and a link for the port you have open, valid for 1, 4, 12 or 24 hours,
+  with an optional passcode and a label so you can tell your shares apart.
+- **Nothing to install, or everything as usual** — the holder either pastes the code into
+  *Remote Serial (Live Relay)* and gets a real port, or opens the link and gets a terminal for
+  that one port in the browser. What the browser side may do is set when the code is minted:
+  nothing, view only, view and send, or view, send and set the port's parameters.
+- **It ends the way you expect** — when the port closes, when Live Console is switched off, on
+  sign-out and on exit. Five wrong passcodes burn the code; an expired code admits nobody new
+  but never cuts a session in progress. *Cloud > Manage Guest Shares…* lists every live share
+  on every machine on your account, with who is on each, and stops any of them.
+- **Nobody drives your port in silence** — the status bar says *Shared* while a door stands
+  open and *In use* the moment somebody is on the other end, naming the guest when there is
+  only one.
 
 ### Firmware updates over the wire: XMODEM and YMODEM
 
@@ -372,6 +406,17 @@ The CRC calculator, with the standard families and a fully custom polynomial:
 Serial Port Utility is commercial software with a **30-day free trial** — no account needed to
 try it. After the trial, personal and enterprise licenses are available with 1-month, 1-year,
 3-year and lifetime terms.
+
+A license can be **bound to your Alithon account**: tick the box at checkout (or in License
+Management on a machine that already has a key) and signing in activates whatever computer you
+are on, while signing out releases it again. A key that is not bound runs on up to **three
+machines at once**, and deactivating one gives the slot straight back — there is no transfer
+count to use up. A key binds to one account and cannot be moved afterwards, so every place that
+offers it says so first.
+
+The remote-access features above are available on **every edition**, including a free one. What
+a paid entitlement changes is the monthly cloud traffic allowance the Live Console, Live Relay
+and Live Share paths draw on.
 
 - [Pricing](https://alithon.com/pricing) · [Buy](https://alithon.com/regnow) ·
   [Look up an order](https://alithon.com/order/query) ·
