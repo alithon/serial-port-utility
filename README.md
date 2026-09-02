@@ -95,6 +95,8 @@ Accessing a serial port normally requires membership of the `dialout` group:
   virtual ports.
 - Standard baud rates plus any custom rate your hardware can generate; 5/6/7/8 data bits;
   None/Even/Odd/Mark/Space parity; 1/1.5/2 stop bits; None, RTS/CTS or XON/XOFF flow control.
+- Change any of them while the port is open and the change lands on the port in place — no
+  close-and-reopen, so DTR stays up and the board on the other end is not reset.
 - Live TX/RX and control-line lamps (RTS, CTS, DTR, DSR, DCD, RI) that blink with real
   traffic; DTR and RTS can be toggled by hand.
 - TCP client, TCP server (multi-client), UDP client and UDP server for network-attached

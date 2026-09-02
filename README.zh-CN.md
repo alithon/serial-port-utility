@@ -87,6 +87,7 @@ tar xzf serial-port-utility-*-linux-x86_64.tar.gz
 - 任意 COM 口：板载串口、USB 转串口（FTDI、Prolific、CH340、CP210x……）与虚拟串口。
 - 标准波特率之外还可填任意自定义速率（上限只取决于硬件）；5/6/7/8 数据位；
   无/偶/奇/标记/空格校验；1/1.5/2 停止位；无、RTS/CTS 或 XON/XOFF 流控。
+- 串口开着时改这些参数立即就地生效，不关不重开——DTR 不会掉，对端的开发板也不会被顺手复位。
 - TX/RX 与控制线指示灯（RTS、CTS、DTR、DSR、DCD、RI）随真实收发闪烁，DTR 与 RTS 可手动翻转。
 - TCP 客户端、TCP 服务端（多客户端接入）、UDP 客户端与 UDP 服务端，用于网络设备、
   串口服务器与模拟器。
