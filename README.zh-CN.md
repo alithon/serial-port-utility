@@ -28,7 +28,7 @@
 带时间戳记录下来。
 
 它是 [Alithon Studio](https://alithon.com) 的商业软件，支持 Windows、macOS 与 Linux，
-提供 30 天免费试用。**本仓库是它的官方发布源** —— 详见[关于本仓库](#关于本仓库)。
+提供 Free 基础调试，直接下载版从首次启动起提供 30 天 Pro 试用。**本仓库是它的官方发布源** —— 详见[关于本仓库](#关于本仓库)。
 
 与普通串口终端相比：
 
@@ -58,18 +58,12 @@ SHA-256 —— 无论从哪里下载，都建议核对一次。
 
 **Windows** —— 运行安装程序按提示完成即可。覆盖安装不会影响已有设置与授权。
 
-**macOS** —— 这里发布的 `.dmg` 未经 Apple 公证，首次启动会被系统拦下。可在
-**系统设置 → 隐私与安全性** 中选择"仍要打开"，或自行清除隔离属性：
-
-```bash
-xattr -dr com.apple.quarantine /Applications/SerialPortUtility.app
-```
+**macOS** —— 从 `.dmg` 将应用复制到“应用程序”，并核对构建是否支持你的 Mac 架构。若首次启动被拦截，先确认下载来源，再查看**系统设置 → 隐私与安全性**，无需关闭系统整体安全保护。也可选择 Mac App Store 下载渠道。
 
 **Linux** —— 压缩包内是动态链接的可执行文件，需先安装 Qt 6.8 运行库
-（Qt Widgets、Network、SerialPort、Core5Compat）。Debian / Ubuntu 上：
+（Qt Widgets、Network、SerialPort、Core5Compat）。请核对发行版仓库提供的版本：安装名称含 `qt6-*` 的包不代表已具备 Qt 6.8。按所选版本的运行库说明准备好环境后再启动：
 
 ```bash
-sudo apt install qt6-base-dev qt6-serialport-dev qt6-5compat-dev
 tar xzf serial-port-utility-*-linux-x86_64.tar.gz
 ./SerialPortUtility
 ```
@@ -346,8 +340,14 @@ CRC 计算器，涵盖常用算法族与完全自定义的多项式：
 
 ## 授权与购买
 
-友善串口调试助手是商业软件，提供 **30 天免费试用**，试用无需注册账号。试用期结束后可购买
-个人版或企业版授权，支持 1 个月、1 年、3 年与永久多种期限。
+友善串口调试助手提供无需账户的 **Free 基础调试**，直接下载版从**首次启动起提供 30 天 Pro 试用**。到期后仍可使用 Free，已保存的工程文件和日志会保留；使用 Pro 专属配置仍需 Pro。
+
+- **Free：**单路串口、TCP 或 UDP 连接、文本／Hex 显示、校验和与本地日志。RFC 2217 客户端与快捷共享、实时终端、实时中继和实时分享也开放使用，但有云账户流量限制。本地试用不会自动提高云流量额度。
+- **Pro：**多路连接、桥接、Modbus 请求构建器、X/YMODEM 文件传输与设置同步。
+- **个人版与企业版：**提供相同的 Pro 工具。个人版可选 1 个月、1 年、3 年或永久；企业版可选 1 年、3 年或永久，支持组织采购与离线激活。网站期限授权不会自动续费。
+- **Mac App Store：**价格、续费和试用优惠以应用内显示为准，不沿用直接下载版试用。使用购买时的 Apple 账户恢复订阅；已有官网密钥可在当前 App Store 版本输入激活。
+
+参见[安装指南](https://alithon.com/docs/getting-started#installation)和[购买与激活指南](https://alithon.com/docs/support)。当前桌面版本在线激活密钥需要登录；永久绑定密钥是独立的可选操作。企业版可使用目标电脑的 CID 离线激活。
 
 授权可以**绑定到你的 Alithon 账户**：结账时勾选（或在已装好密钥的机器上于「许可证管理」里勾选），
 之后用该账户登录，你所在的那台电脑就自动激活，退出登录时自动释放。未绑定的密钥最多可

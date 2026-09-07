@@ -12,12 +12,12 @@ for convenience only — where the two differ, the Terms of Service govern.
 
 ## What you may do
 
-- Download, install and evaluate the software free of charge for **30 days**.
-- After the trial, use it under a license purchased from [alithon.com](https://alithon.com),
+- Use Free basic debugging without a paid license. Direct downloads include **30 days of Pro from first launch**; after the trial, Free remains available and saved project files and logs are kept.
+- Use Pro under a license purchased from [alithon.com](https://alithon.com),
   within the edition, term, quantity and activation scope shown at checkout. A personal
   license covers the named purchaser and their permitted devices; an enterprise license
   covers the purchasing organization and the purchased quantity.
-- Pass an unmodified installer on to a colleague who will license their own copy.
+- Pass an unmodified installer on to a colleague who may use Free or obtain their own Pro license. Cloud traffic allowances and Mac App Store subscription offers are separate from the direct-download trial.
 
 ## What you may not do
 
@@ -62,9 +62,7 @@ Copyright © 2026 Alithon Studio. 保留所有权利。
 具有约束力的条款是 alithon.com 上发布的[服务条款](https://alithon.com/terms)。以下摘要仅供
 参考；如有出入，以服务条款为准。
 
-**可以**：免费下载、安装并试用 **30 天**；试用期后凭在 [alithon.com](https://alithon.com)
-购买的授权，在结算页所示的版本、期限、数量与激活范围内使用；把未经修改的安装包转给会自行购买
-授权的同事。
+**可以**：无需付费授权使用 Free 基础调试；直接下载版从首次启动起提供 **30 天 Pro 试用**，结束后仍可使用 Free，已保存的工程文件和日志会保留。凭在 [alithon.com](https://alithon.com) 购买的授权，在结算页所示的版本、期限、数量与激活范围内使用 Pro；把未经修改的安装包转给可使用 Free 或自行购买 Pro 授权的同事。云流量额度和 Mac App Store 订阅优惠不等同于直接下载版试用。
 
 **不可以**：转售、出租、再授权或将其打包进其它产品；绕过、修改或模拟授权与激活机制，或共享
 授权密钥；删除或篡改版权、商标与许可声明；反向工程、反编译或反汇编（适用法律明确允许的范围
