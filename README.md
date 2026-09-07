@@ -29,7 +29,7 @@ device is sending, send commands or raw frames back, and keep a timestamped reco
 whole session.
 
 It is a commercial application from [Alithon Studio](https://alithon.com), shipping on
-Windows, macOS and Linux, with a 30-day free trial. **This repository is the official home
+Windows, macOS and Linux, with Free basic debugging and a 30-day Pro trial from first launch in direct downloads. **This repository is the official home
 of its binary releases** — see [About this repository](#about-this-repository).
 
 What sets it apart from a plain terminal emulator:
@@ -63,19 +63,12 @@ lists the SHA-256 of every build — worth checking whichever mirror you use.
 **Windows** — run the installer and follow the prompts. Installing over an existing copy keeps
 your settings and license.
 
-**macOS** — the `.dmg` published here is not notarized by Apple. macOS will refuse the first
-launch; open **System Settings → Privacy & Security** and choose **Open Anyway**, or clear the
-quarantine flag yourself:
-
-```bash
-xattr -dr com.apple.quarantine /Applications/SerialPortUtility.app
-```
+**macOS** — copy the app from the `.dmg` to Applications. Check that the build supports your Mac's architecture. If first launch is blocked, verify the download source and check **System Settings → Privacy & Security**; do not disable system-wide security. Mac App Store is an alternative download channel.
 
 **Linux** — the archive holds a dynamically linked binary, so install the Qt 6.8 runtime first
-(Qt Widgets, Network, SerialPort and Core5Compat). On Debian or Ubuntu:
+(Qt Widgets, Network, SerialPort and Core5Compat). Check the version supplied by your distribution: installing packages named `qt6-*` does not guarantee Qt 6.8. Follow the selected release's runtime instructions before starting the executable:
 
 ```bash
-sudo apt install qt6-base-dev qt6-serialport-dev qt6-5compat-dev
 tar xzf serial-port-utility-*-linux-x86_64.tar.gz
 ./SerialPortUtility
 ```
@@ -362,9 +355,14 @@ The CRC calculator, with the standard families and a fully custom polynomial:
 
 ## Licensing
 
-Serial Port Utility is commercial software with a **30-day free trial** — no account needed to
-try it. After the trial, personal and enterprise licenses are available with 1-month, 1-year,
-3-year and lifetime terms.
+Serial Port Utility offers **Free basic debugging** without an account and a **30-day Pro trial from first launch** in direct downloads. After the trial, Free remains available and saved project files and logs are kept; Pro-only configurations require Pro to use.
+
+- **Free:** one serial, TCP or UDP connection, text/Hex views, checksums and local logs. RFC 2217 client and quick sharing, Live Console, Live Relay and Live Share are also available, subject to cloud account traffic allowances. A local trial does not itself increase cloud allowance.
+- **Pro:** multiple connections, bridges, the Modbus request builder, X/YMODEM file transfer and settings sync.
+- **Personal and Enterprise:** both unlock the same Pro tools. Personal offers 1 month, 1 year, 3 years and lifetime; Enterprise offers 1 year, 3 years and lifetime, with organization purchasing and offline activation support. Website term licenses do not renew automatically.
+- **Mac App Store:** subscription prices, renewal and any trial offer are shown in the app. The direct-download trial does not carry over. Restore an Apple purchase with the same Apple Account; an existing website key can be entered in current App Store builds.
+
+Follow the [installation guide](https://alithon.com/docs/getting-started#installation) and [purchase and activation guide](https://alithon.com/docs/support). Online key activation in current desktop builds requires sign-in; permanently binding the key is a separate, optional choice. Enterprise supports offline activation using the target computer's CID.
 
 - [Pricing](https://alithon.com/pricing) · [Buy](https://alithon.com/regnow) ·
   [Look up an order](https://alithon.com/order/query) ·
