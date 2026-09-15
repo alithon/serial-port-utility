@@ -27,6 +27,7 @@ for convenience only — where the two differ, the Terms of Service govern.
 - Reverse engineer, decompile or disassemble the software, except to the extent applicable
   law expressly permits it despite this restriction.
 - Republish modified packages, or distribute builds that present themselves as official.
+- Continue to use Pro features on a device after the license used to activate them has been refunded. Alithon may restrict a device that has been used to breach these terms; the software then displays a notice and exits on that device (Terms of Service, section 8).
 
 ## Documentation and images
 
