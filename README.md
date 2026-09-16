@@ -412,7 +412,9 @@ Management on a machine that already has a key) and signing in activates whateve
 are on, while signing out releases it again. A key that is not bound runs on up to **three
 machines at once**, and deactivating one gives the slot straight back — there is no transfer
 count to use up. A key binds to one account and cannot be moved afterwards, so every place that
-offers it says so first.
+offers it says so first. For an Enterprise key the binding only records who manages it: the key
+appears in that account's dashboard and seats can be released from there, while each seat still
+activates with its own user's account.
 
 The remote-access features above are available on **every edition**, including a free one. What
 a paid entitlement changes is the monthly cloud traffic allowance the Live Console, Live Relay
